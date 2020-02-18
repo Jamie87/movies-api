@@ -1,7 +1,7 @@
 package RestApi.movies.controller;
 
 
-import RestApi.movies.model.Movies;
+import RestApi.movies.model.Movie;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,15 +16,15 @@ public class MovieController {
 
     @GetMapping
     @RequestMapping("/movies")
-    public void getAll() throws IOException {
+    public String getAll() throws IOException {
 
         byte[] jsonData = Files.readAllBytes(Paths.get("movies.json"));
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Movies movies = objectMapper.readValue(jsonData, Movies.class);
+        Movie movie = objectMapper.readValue(jsonData, Movie.class);
 
-        System.out.println(movies);
+        return movie.getMovies().toString();
 
     }
 

@@ -1,15 +1,27 @@
 package RestApi.movies.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Movies {
 
+    @JsonProperty("movie_id")
     private int movieId;
+
     private String title;
+
     private String description;
+
     private String producer;
+
+    @JsonProperty("available_in_3d")
     private boolean availableIn3d;
+
+    @JsonProperty("age_rating")
     private String ageRating;
+
     private int likes;
-    private Comments comments;
+
+    private Comments[] comments;
 
     public int getMovieId() {
         return movieId;
@@ -67,11 +79,11 @@ public class Movies {
         this.likes = likes;
     }
 
-    public Comments getComments() {
+    public Comments[] getComments() {
         return comments;
     }
 
-    public void setComments(Comments comments) {
+    public void setComments(Comments[] comments) {
         this.comments = comments;
     }
 

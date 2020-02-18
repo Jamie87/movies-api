@@ -4,7 +4,7 @@ public class Comments {
 
     private String user;
     private String message;
-    private int dateCreated;
+    private String dateCreated;
     private int like;
 
     public String getUser() {
@@ -23,11 +23,11 @@ public class Comments {
         this.message = message;
     }
 
-    public int getDateCreated() {
+    public String getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(int dateCreated) {
+    public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
     }
 
