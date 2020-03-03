@@ -1,36 +1,39 @@
 package RestApi.movies.controller;
 
-
-import RestApi.movies.model.Movie;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import RestApi.movies.model.Movies;
+import RestApi.movies.service.MovieService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.websocket.server.PathParam;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @RestController
 public class MovieController {
 
+    @Autowired
+    private MovieService movieService;
+
     @GetMapping
     @RequestMapping("/movies")
-    public String getAll() throws IOException {
+    public Movies[] getAll() throws IOException {
 
-        byte[] jsonData = Files.readAllBytes(Paths.get("movies.json"));
+        Movies[] response = movieService.findAll().getMovies();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        Movie movie = objectMapper.readValue(jsonData, Movie.class);
-
-        return movie.getMovies().toString();
+        return response;
 
     }
 
     @GetMapping
     @RequestMapping("/movies/{id}")
-    public void getMovie() {
+    public Movies getMovie(@PathVariable int id) throws IOException {
+
+        Movies response = movieService.findMovie(id);
+
+        return response;
 
     }
 
