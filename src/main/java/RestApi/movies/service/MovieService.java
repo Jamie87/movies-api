@@ -1,50 +1,50 @@
 package RestApi.movies.service;
 
-import RestApi.movies.model.Movie;
 import RestApi.movies.model.Movies;
+import RestApi.movies.model.Movie;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class MovieService {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    public Movie findAll() throws IOException {
+    public Movies findAll() throws IOException {
 
         byte[] jsonData = Files.readAllBytes(Paths.get("movies.json"));
+
+            Movies movies = objectMapper.readValue(jsonData, Movies.class);
+            return movies;
+
+    }
+
+    public ResponseEntity<Movie> findMovie(int id)  {
 
         try {
 
-            Movie movie = objectMapper.readValue(jsonData, Movie.class);
-            return movie;
+            byte[] jsonData = Files.readAllBytes(Paths.get("movies.json"));
+            Movies movies = objectMapper.readValue(jsonData, Movies.class);
 
-        } catch (IOException e) {
+            for (Movie movie : movies.getMovies()) {
+                if (movie.getMovieId() == id) {
 
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public Movies findMovie(int id) throws IOException {
-
-        byte[] jsonData = Files.readAllBytes(Paths.get("movies.json"));
-        Movie movie = objectMapper.readValue(jsonData, Movie.class);
-
-        for (Movies movies : movie.getMovies()) {
-            if (movies.getMovieId() == id) {
-                return movies;
+                    return new ResponseEntity<>(movie, HttpStatus.OK);
+                }
             }
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            
+        } catch (IOException io) {
+
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return null;
-
     }
 
     public void create() throws IOException {
