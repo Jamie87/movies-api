@@ -3,6 +3,7 @@ package RestApi.movies.controller;
 import RestApi.movies.model.Movie;
 import RestApi.movies.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,19 +22,28 @@ public class MovieController {
 
     @GetMapping
     @RequestMapping("/movies")
-    public Movie[] getAll() throws IOException {
+    public ResponseEntity<Movie[]> getAll() throws IOException {
 
-            Movie[] response = movieService.findAll().getMovies();
-            return response;
+        Movie[] response = movieService.findAll().getMovies();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
     @GetMapping
     @RequestMapping("/movies/{id}")
-    public ResponseEntity getMovie(@PathVariable int id)  {
+    public ResponseEntity<Movie> getMovie(@PathVariable int id) throws IOException {
 
-        ResponseEntity response = movieService.findMovie(id);
-        return response;
+
+            Movie response = movieService.findMovie(id);
+
+            if (response != null) {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+
     }
 
 }

@@ -1,50 +1,47 @@
 package RestApi.movies.service;
 
+import RestApi.movies.JsonReader;
 import RestApi.movies.model.Movies;
 import RestApi.movies.model.Movie;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @Component
 public class MovieService {
+
+    @Autowired
+    private JsonReader jsonReader;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
     public Movies findAll() throws IOException {
 
-        byte[] jsonData = Files.readAllBytes(Paths.get("movies.json"));
+        byte[] jsonData = jsonReader.getData();
 
-            Movies movies = objectMapper.readValue(jsonData, Movies.class);
-            return movies;
+        Movies movies = objectMapper.readValue(jsonData, Movies.class);
+
+        return movies;
 
     }
 
-    public ResponseEntity<Movie> findMovie(int id)  {
+    public Movie findMovie(int id) throws IOException {
 
-        try {
+        byte[] jsonData = jsonReader.getData();
 
-            byte[] jsonData = Files.readAllBytes(Paths.get("movies.json"));
-            Movies movies = objectMapper.readValue(jsonData, Movies.class);
+        Movies movies = objectMapper.readValue(jsonData, Movies.class);
 
-            for (Movie movie : movies.getMovies()) {
-                if (movie.getMovieId() == id) {
+        for (Movie movie : movies.getMovies()) {
+            if (movie.getMovieId() == id) {
 
-                    return new ResponseEntity<>(movie, HttpStatus.OK);
-                }
+                return movie;
             }
-
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            
-        } catch (IOException io) {
-
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return null;
+
     }
 
     public void create() throws IOException {
